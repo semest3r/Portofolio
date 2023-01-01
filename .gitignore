@@ -1,0 +1,5 @@
+venv/
+assets/
+__pycache__/
+.vscode/
+ship_web/__init__.py
