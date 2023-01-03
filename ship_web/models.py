@@ -1,7 +1,8 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, TIMESTAMP
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, TIMESTAMP, TEXT
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from ship_web.settings import Base
+from datetime import datetime
 
 #class Ship(Base):
 #    __tablename__ = "ship"
@@ -19,7 +20,17 @@ class Category(Base):
     id = Column(UUID(as_uuid=True), nullable=False, unique=True)
     name_category = Column(String, nullable=False, unique=True)
     #hip = relationship("Ship",cascade="all, delete", back_populates="category")
-    
+
+class Gallery(Base):
+    __tablename__ = "gallery"
+    pk = Column(Integer, primary_key=True, nullable=False, unique=True)
+    id = Column(UUID(as_uuid=True), nullable=False, unique=True)
+    title = Column(String, nullable=False)
+    description = Column(TEXT, nullable=True)
+    img = Column(String, nullable=False, default="default.jpg")
+    created_at = Column(TIMESTAMP, default=datetime.now())
+    updated_at = Column(TIMESTAMP, default=datetime.now())
+
 class User(Base):
     __tablename__="user"
     pk = Column(Integer, primary_key=True, nullable=False, unique=True)

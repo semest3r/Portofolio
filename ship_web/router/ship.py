@@ -37,6 +37,7 @@ def create_ship(form: schemas.CreateShip, get_current_user=Security(get_current_
             fn.close()
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Image Invalid Request")
+    
     db_ship = models.Ship(id=generate, img=settings.get_time(), ship_name=form.ship_name, category_id=form.category_id)
     db.add(db_ship)
     db.commit()

@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from typing import List, Optional, Union
 from email_validator import validate_email
 from uuid import UUID
+from datetime import datetime
+
 
 class BaseUser(BaseModel):
     username: str
@@ -73,3 +75,24 @@ class UserRoles(BaseModel):
 
 class CreateRoles(BaseModel):
     name_roles:str
+
+#Gallery
+class Gallery(BaseModel):
+    id: UUID
+    title: str
+    description: str
+    img:str
+    created_at: datetime
+
+class CreateGallery(BaseModel):
+    title: str
+    description: str
+    img: str
+
+class UpdateGallery(CreateGallery):
+    pass
+
+class GetGallery(Gallery):
+    pass
+    class Config:
+        orm_mode=True
