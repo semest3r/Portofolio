@@ -1,8 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, TIMESTAMP
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from ship_web.settings import Base
-from datetime import datetime
 
 #class Ship(Base):
 #    __tablename__ = "ship"
