@@ -17,14 +17,14 @@ def get_gallery(limit:int=100, skip:int=0, db:Session=Depends(settings.get_db)):
     return db_gallery
 
 @router.get("/gallery/{id}", response_model=schemas.GetGallery)
-def get_gellery_id(db:Session=Depends(settings.get_db)):
-    db_gallery = crud.db_get_filter(models=models.Gallery, models_filter=models.Gallery.id, filter=form.title, db=db)
+def get_gellery_id(id:uuid.UUID, db:Session=Depends(settings.get_db)):
+    db_gallery = crud.db_get_filter(models=models.Gallery, models_filter=models.Gallery.id, filter=id, db=db)
     if not db_gallery:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gallery Not Found")
     return db_gallery
 
 @router.post("/gallery/", status_code=status.HTTP_201_CREATED)
-def create_gallery(form:schemas.CreateGallery, db:Session=Depends(settings.get_db)):
+def create_gallery(form:schemas.CreateGallery, get_current_user=Security(get_current_user, scopes=['user','superuser']), db:Session=Depends(settings.get_db)):
     validasi = crud.db_get_filter(models=models.Gallery, models_filter=models.Gallery.title, filter=form.title, db=db)
     if validasi :
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Gallery Already Registered")
@@ -44,7 +44,7 @@ def create_gallery(form:schemas.CreateGallery, db:Session=Depends(settings.get_d
     return {}
 
 @router.put("/gallery/{id}")
-def update_gallery(id:uuid.UUID, form:schemas.UpdateGallery, db:Session=Depends(settings.get_db)):
+def update_gallery(id:uuid.UUID, form:schemas.UpdateGallery, get_current_user=Security(get_current_user, scopes=['user','superuser']), db:Session=Depends(settings.get_db)):
     db_gallery = crud.db_filter(models=models.Gallery, models_filter=models.Gallery.id, filter=id, db=db)
     get_validasi = db_gallery.first()
     if not get_validasi:
@@ -63,7 +63,7 @@ def update_gallery(id:uuid.UUID, form:schemas.UpdateGallery, db:Session=Depends(
     return {}
 
 @router.delete("/gallery/{id}")
-def delete_gallery(id:uuid.UUID, db:Session=Depends(settings.get_db)):
+def delete_gallery(id:uuid.UUID,get_current_user=Security(get_current_user, scopes=['superuser']), db:Session=Depends(settings.get_db)):
     db_gallery = crud.db_filter(models=models.Gallery, models_filter=models.Gallery.id, filter=id, db=db)
     get_validasi = db_gallery.first()
     if not get_validasi:

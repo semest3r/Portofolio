@@ -37,7 +37,7 @@ class Category(BaseModel):
     name_category : str
     
 class getCategory(BaseModel):
-    category_uuid:str
+    id:UUID
     name_category:str
     
     class Config:

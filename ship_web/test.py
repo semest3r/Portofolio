@@ -4,20 +4,34 @@ import uuid
 from passlib.context import CryptContext
 import secrets
 from jose import JWTError, jwt
-expire = datetime.utcnow()+timedelta(minutes=5)
-print(expire)
-SECRET_KEY = "1b09d17ac7e0b84d4de7be808e86878ab47c63eda404bab89a8178f144059a5f"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 5
 
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.utcnow()+timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp":expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-test_jwt  = create_access_token(data={"username":"154df638-992b-567a-bff4-b67f38e6a667","scopes":["user"]})
-print(test_jwt)
+
+
+class FixedContentQueryChecker:
+    def __init__(self, fixed_content: str):
+        self.fixed_content = fixed_content
+
+    def __call__(self, q: str = ""):
+        if q:
+            return self.fixed_content in q
+        return False
+
+checker = FixedContentQueryChecker("bar")
+
+#expire = datetime.utcnow()+timedelta(minutes=5)
+#print(expire)
+#SECRET_KEY = "1b09d17ac7e0b84d4de7be808e86878ab47c63eda404bab89a8178f144059a5f"
+#ALGORITHM = "HS256"
+#ACCESS_TOKEN_EXPIRE_MINUTES = 5
+#
+#def create_access_token(data: dict):
+#    to_encode = data.copy()
+#    expire = datetime.utcnow()+timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+#    to_encode.update({"exp":expire})
+#    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+#    return encoded_jwt
+#test_jwt  = create_access_token(data={"username":"154df638-992b-567a-bff4-b67f38e6a667","scopes":["user"]})
+#print(test_jwt)
 """time = datetime.datetime.utcnow()
 utc_time = calendar.timegm(time.utctimetuple())
 name_img = f'img{utc_time}.jpg'
