@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status, Security
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
@@ -6,11 +6,11 @@ from passlib.context import CryptContext
 from ..schemas import TokenData
 from .. import settings, models
 from datetime import timedelta, datetime
-from typing import Union
+from ..settings import set_db
 
-SECRET_KEY = "1b09d17ac7e0b84d4de7be808e86878ab47c63eda404bab89a8178f144059a5f"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 5
+SECRET_KEY = f'{set_db.SECRET_KEY}'
+ALGORITHM = f'{set_db.ALGORITHM}'
+ACCESS_TOKEN_EXPIRE_MINUTES = {set_db.ACCESS_TOKEN_EXPIRE_MINUTES}
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login",
 scopes={"superuser": "Read information about the current user.", "user": "Read items."})#link endpoint
