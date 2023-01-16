@@ -18,3 +18,6 @@
     SECRET_KEY=
     ALGORITHM=
     ACCESS_TOKEN_EXPIRE_MINUTES=
+
+## RUN UVICORN
+    uvicorn ship_web.main:app
