@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Security, Request
+from fastapi import APIRouter, Depends, status, HTTPException, Security, Request, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from ship_web import models, schemas, settings
 from ..auth.oauth2 import hash_password, create_access_token, verify_password, get_current_user, credentials_exception
 import uuid
-
+import pandas as pd
+import time
 router = APIRouter(
     tags=["User"]
 )
@@ -68,3 +69,24 @@ def login_user(user_credentials: OAuth2PasswordRequestForm = Depends(), db:Sessi
 @router.get('/current_user/', response_model=schemas.getUser)
 def current_user(get_current_user=Security(get_current_user, scopes=['superuser'])):
     return get_current_user
+
+@router.post('/user_batch/', status_code=status.HTTP_201_CREATED)
+async def create_user(fileb: UploadFile = File(), db: Session=Depends(settings.get_db)):
+    df = pd.read_csv(fileb.file, sep=";")
+    read = df.to_dict(orient="records")
+    startTime = time.time()
+    data = []
+    for x in read:
+        get_user = db.query(models.User).filter(models.User.username == x["username"]).first()
+        if get_user:
+            print("user sudah registrasi")
+        get_uuid = uuid.uuid4()
+        generate = uuid.uuid5(get_uuid, x["username"])
+        get_password = hash_password(x["password"])
+        data.append(models.User(id=generate, username=x["username"], password=get_password))
+    print(data)
+    db.bulk_save_objects(data)
+    db.commit()
+    executionTime = (time.time() - startTime)
+    print('Execution time in seconds: ' + str(executionTime))
+    return {"status":True}
